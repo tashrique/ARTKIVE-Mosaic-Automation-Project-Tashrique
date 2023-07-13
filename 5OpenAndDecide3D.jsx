@@ -39,16 +39,15 @@ function saveAsPSD(saveFile) {
   app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 
 }
-//embed layers
+// Rasterize linked layers
 function processLayers(layers) {
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
-    alert(layer.typename + " - " + layer.kind + " - " + layer.smartObject.linked)
 
     if (layer.typename === 'ArtLayer') {
       try {
-        if (layer.kind === LayerKind.SMARTOBJECT && layer.smartObject.linked) {
-          layer.smartObject.unlink(); // This embeds the smart object
+        if (layer.kind === LayerKind.SMARTOBJECT) {
+          layer.rasterize(RasterizeType.ENTIRELAYER)
         }
       } catch (e) {
         alert("An error occurred while trying to embed a smart object: " + e);
@@ -65,11 +64,12 @@ function processLayers(layers) {
   }
 }
 
+
 function main(folder) {
   // Initiliaze
   {
     var scriptFolder = new File($.fileName).parent;
-    var templateFile = new File(scriptFolder + "/template25.psd");
+    var templateFile = new File(scriptFolder + "/template.psd");
     var newDoc = app.open(templateFile);
     app.activeDocument = newDoc;
   }
@@ -84,7 +84,6 @@ function main(folder) {
 
         if (file instanceof File && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
           app.open(file);
-
           // Run processImages for each image
           {
             var processScript = File(scriptFolder + "/5-2processImage.jsx");
@@ -97,6 +96,7 @@ function main(folder) {
           }
         }
       }
+
     }
 
     //Refresh images
@@ -131,10 +131,18 @@ function main(folder) {
       app.activeDocument = newDoc;
     }
 
-    //Link images
+    // Rasterize linked layers
     {
       processLayers(app.activeDocument.layers);
     }
+
+
+    // Save the document
+    {
+      app.activeDocument.save();
+    }
+
+
 
   } else {
     alert("Output folder does not exist");
