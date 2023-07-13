@@ -3,7 +3,6 @@ function saveInNewFormat() {
 
     // Get the current file path
     var filePath = doc.path;
-    alert(doc.path);
     var tname = doc.name;
     
     // Extract the original file name without the extension
