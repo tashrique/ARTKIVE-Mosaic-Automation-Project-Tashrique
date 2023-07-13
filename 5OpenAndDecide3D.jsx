@@ -19,6 +19,7 @@ function refreshLinkedSmartObjects(layerSet) {
     if (layer.kind === LayerKind.SMARTOBJECT && layer.linked) {
       try {
         layer.updateSmartObject();  // This updates the smart object
+
       } catch (e) {
         alert("An error occurred while updating a smart object: " + e);
       }
@@ -66,8 +67,15 @@ function processLayers(layers) {
 
 
 function main(folder) {
+
+
   // Initiliaze
   {
+
+    while (app.documents.length > 0) {
+      activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+    }
+
     var scriptFolder = new File($.fileName).parent;
     var templateFile = new File(scriptFolder + "/template.psd");
     var newDoc = app.open(templateFile);
@@ -133,7 +141,7 @@ function main(folder) {
 
     // Rasterize linked layers
     {
-      processLayers(app.activeDocument.layers);
+      // processLayers(app.activeDocument.layers);
     }
 
 

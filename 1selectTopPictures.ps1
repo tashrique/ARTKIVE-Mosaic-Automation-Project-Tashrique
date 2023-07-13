@@ -9,6 +9,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $print = New-Object -ComObject Wscript.Shell
 pip install opencv-python
 pip install -U scikit-learn
+python.exe -m pip install --upgrade pip
 
 
 

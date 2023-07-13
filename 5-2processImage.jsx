@@ -6,12 +6,16 @@
 
         // Pastel color Presents
         var presets = [
-            { R: 255, G: 179, B: 186 },
-            { R: 255, G: 223, B: 186 },
-            { R: 255, G: 255, B: 186 },
-            { R: 186, G: 255, B: 201 },
-            { R: 186, G: 225, B: 255 }
+            { R: 255, G: 99, B: 146 },
+            { R: 255, G: 228, B: 94 },
+            { R: 255, G: 99, B: 146 },
+            { R: 6, G: 214, B: 160 },
+            { R: 217, G: 237, B: 146 },
+            { R: 221, G: 161, B: 94 },
+            { R: 242, G: 186, B: 201 },
+            { R: 186, G: 215, B: 242 }
         ];
+        
 
         var doc = app.activeDocument;
         activeDocument.activeLayer.isBackgroundLayer = false;
@@ -172,9 +176,9 @@
         for (var i = 0; i < presets.length; i++) {
             var preset = presets[i];
             var difference = Math.sqrt(
-                Math.pow(Number(colors.R) - preset.R, 2) +
-                Math.pow(Number(colors.G) - preset.G, 2) +
-                Math.pow(Number(colors.B) - preset.B, 2)
+                Math.pow(Number(colors.cR) - preset.R, 2) +
+                Math.pow(Number(colors.cG) - preset.G, 2) +
+                Math.pow(Number(colors.cB) - preset.B, 2)
             );
 
             if (difference < minDifference) {
@@ -182,7 +186,6 @@
                 complementaryColor = preset;
             }
         }
-
         return complementaryColor;
     }
     // Set background color from presets to non rectangle images
@@ -190,6 +193,9 @@
 
         var docRef = app.activeDocument;
         var layerRef = docRef.activeLayer;
+
+        layerRef.resize(85, 85, AnchorPosition.MIDDLECENTER);
+
 
         // convert color values to a SolidColor object
         var colorToSet = new SolidColor();
