@@ -225,7 +225,7 @@
         // backgroundLayer.move(layerSetRef, ElementPlacement.INSIDE);
         // layerRef.move(layerSetRef, ElementPlacement.INSIDE);
     }
-    // Resize smallest side to 960px
+    // Resize smallest side to 960px and 300 resolution
     function resize() {
         var doc = app.activeDocument;
         var docWidth = doc.width.value;
@@ -236,7 +236,6 @@
         } else {
             doc.resizeImage(null, UnitValue(960, "px"), 300, ResampleMethod.BICUBIC);
         }
-
     }
     //Rescale the image
     function rescale() {
@@ -527,43 +526,24 @@ function main() {
 
     // Work on individual images
     {
-        //STEP ALPHA
-        {
-            // Initialize variables
-            var whiteness = 0;
+
+        // Initialize variables
+        var whiteness = 0;
+        MagicWand(TOLERANCE); // Tolerance = 15
+        var whiteness = runWhitePercentage();
+
+        if (whiteness > 25) {
+            dltBG();
+            var colors = getColorsFromCSV();
+            var complementaryColor = getComplementaryColor(colors, presets);
+            zoomOutandSetBG(complementaryColor);
+        } else { dltBGandCrop(); }
 
 
-            MagicWand(TOLERANCE); // Tolerance = 15
-            var whiteness = runWhitePercentage();
 
-            if (whiteness > 25) {
-                dltBG();
-                var colors = getColorsFromCSV();
-                var complementaryColor = getComplementaryColor(colors, presets);
-                zoomOutandSetBG(complementaryColor);
-
-            } else {
-                dltBGandCrop();
-            }
-        }
-
-        //STEP BETA
-        {
-            if (whiteness <= 25) {
-                rescale();
-                // Crop2Size();
-            }
-            nameLayers();
-            // savePhoto();
-        }
+        if (whiteness <= 25) { rescale(); }
+        nameLayers();
         resize();
-
-
-        //STEP GAMMA
-        if (whiteness <= 25) {
-            // unlink();
-        }
-
         activeDocument.flatten();
         savePhoto();
 
