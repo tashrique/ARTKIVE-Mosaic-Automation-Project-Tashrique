@@ -1,13 +1,14 @@
-# Get the directory of the script location
+# Get the BAT file path
 $scriptDir = $PSScriptRoot
+$batFile = Join-Path $scriptDir 'RunForOneMosaic.bat'
+if (!(Test-Path -Path $batFile)) {
+    Write-Output "File $batFile does not exist."
+    return
+}
 
-# Get the parent directory of the script location
+# Get the ORDERS IN PROGRESS directory
 $parentDir = Split-Path $PSScriptRoot -Parent
-
-# Get the MOSAIC ORDERS SAMPLE directory
-$outputDir = Join-Path $parentDir 'MOSAIC ORDERS SAMPLE'
-
-# Check if the MOSAIC ORDERS SAMPLE directory exists
+$outputDir = Join-Path $parentDir 'Orders in Progress\'
 if (!(Test-Path -Path $outputDir)) {
     Write-Output "Directory $outputDir does not exist."
     return
@@ -16,22 +17,19 @@ if (!(Test-Path -Path $outputDir)) {
 # Get the subdirectories in the MOSAIC ORDERS SAMPLE directory
 $subDirs = Get-ChildItem -Path $outputDir -Directory
 
-# Get the BAT file path
-$batFile = Join-Path $scriptDir 'RunForOneMosaic.bat'
-Write-Output $batFile
-
-
-# Check if the BAT file exists
-if (!(Test-Path -Path $batFile)) {
-    Write-Output "File $batFile does not exist."
-    return
-}
 
 # For each subdirectory
 foreach ($dir in $subDirs) {
     # Change directory to the subdirectory
     Set-Location -Path $dir.FullName
 
+    # Create a temporary text file in the script directory and write the directory path to it
+    $tempFile = Join-Path $scriptDir "temp.txt"
+    $dir.FullName | Out-File -FilePath $tempFile
+
     # Run the BAT file
-    cmd.exe /c $batFile
+    & $batFile
+
+    # Remove the temporary text file
+    Remove-Item -Path $tempFile
 }

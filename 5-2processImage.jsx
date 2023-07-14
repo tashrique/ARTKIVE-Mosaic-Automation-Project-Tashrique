@@ -9,13 +9,15 @@
             { R: 255, G: 99, B: 146 },
             { R: 255, G: 228, B: 94 },
             { R: 255, G: 99, B: 146 },
-            { R: 6, G: 214, B: 160 },
             { R: 217, G: 237, B: 146 },
             { R: 221, G: 161, B: 94 },
             { R: 242, G: 186, B: 201 },
             { R: 186, G: 215, B: 242 }
         ];
-        
+
+        // Initialize copy of presets
+        var presetsCopy = presets.slice();
+
 
         var doc = app.activeDocument;
         activeDocument.activeLayer.isBackgroundLayer = false;
@@ -169,12 +171,13 @@
         return colors;
     }
     // Get color for BG from list
-    function getComplementaryColor(colors, presets) {
+    function getComplementaryColor(colors) {
         var minDifference = Number.MAX_VALUE;
         var complementaryColor = null;
+        var complementaryIndex = null;
 
-        for (var i = 0; i < presets.length; i++) {
-            var preset = presets[i];
+        for (var i = 0; i < presetsCopy.length; i++) {
+            var preset = presetsCopy[i];
             var difference = Math.sqrt(
                 Math.pow(Number(colors.cR) - preset.R, 2) +
                 Math.pow(Number(colors.cG) - preset.G, 2) +
@@ -184,8 +187,14 @@
             if (difference < minDifference) {
                 minDifference = difference;
                 complementaryColor = preset;
+                complementaryIndex = i;
             }
         }
+        // Remove the chosen color from the copy of the presets
+        if (complementaryColor !== null) {
+            presetsCopy.splice(complementaryIndex, 1);
+        }
+
         return complementaryColor;
     }
     // Set background color from presets to non rectangle images

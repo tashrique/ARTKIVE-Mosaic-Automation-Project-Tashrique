@@ -7,28 +7,33 @@ $gridImageCount = 25
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms
 $print = New-Object -ComObject Wscript.Shell
-pip install opencv-python
-pip install -U scikit-learn
-python.exe -m pip install --upgrade pip
 
 
 
-# Prompt user to select a folder
-$dialog = New-Object System.Windows.Forms.FolderBrowserDialog
-$result = $dialog.ShowDialog()
-if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
-    $folderPath = $dialog.SelectedPath
-    Write-Host "You selected: $folderPath"
 
-    $outputtxt = Join-Path -Path $pwd -ChildPath "workingFolderPath.txt"
-    # Write the selected folder path to a text file
-    $folderPath | Out-File -FilePath $outputtxt
-}
-else {
-    Write-Host "No folder was selected."
+# Get the path to the temp.txt file
+$tempFile = Join-Path $PSScriptRoot "temp.txt"
+if (!(Test-Path -Path $tempFile)) {
+    Write-Output "File $tempFile does not exist."
     Start-Sleep 5
     exit
 }
+
+# Read the folderPath from the temp.txt file
+$folderPath = Get-Content -Path $tempFile
+if (!(Test-Path -Path $folderPath)) {
+    Write-Output "Folder $folderPath does not exist."
+    Start-Sleep 5
+    exit
+}
+
+
+# If the folder exists, write the folder path to a text file
+Write-Host "You selected: $folderPath"
+
+$outputtxt = Join-Path -Path $pwd -ChildPath "workingFolderPath.txt"
+$folderPath | Out-File -FilePath $outputtxt
+
 
 #------------------------------------------------------------------#
 #CHECK IF CORNERS ARE WHITE - ROUND PICTURE?
