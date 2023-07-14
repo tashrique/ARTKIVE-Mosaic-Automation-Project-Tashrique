@@ -1,6 +1,4 @@
-function saveInNewFormat() {
-    var doc = app.activeDocument;
-
+function saveInNewFormat(doc) {
     // Get the current file path
     var filePath = doc.path;
     var tname = doc.name;
@@ -33,4 +31,7 @@ function saveInNewFormat() {
     originalFile.remove();
 }
 
-saveInNewFormat();
+// Loop over all open documents
+for (var i = app.documents.length - 1; i >= 0; i--) {
+    saveInNewFormat(app.documents[i]);
+}

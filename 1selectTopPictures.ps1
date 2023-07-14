@@ -9,8 +9,6 @@ Add-Type -AssemblyName System.Windows.Forms
 $print = New-Object -ComObject Wscript.Shell
 
 
-
-
 # Get the path to the temp.txt file
 $tempFile = Join-Path $PSScriptRoot "temp.txt"
 if (!(Test-Path -Path $tempFile)) {
