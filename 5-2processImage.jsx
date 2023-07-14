@@ -3,22 +3,6 @@
     {
         app.preferences.rulerUnits = Units.PIXELS;
         var TOLERANCE = 6;
-
-        // Pastel color Presents
-        var presets = [
-            { R: 255, G: 99, B: 146 },
-            { R: 255, G: 228, B: 94 },
-            { R: 255, G: 99, B: 146 },
-            { R: 217, G: 237, B: 146 },
-            { R: 221, G: 161, B: 94 },
-            { R: 242, G: 186, B: 201 },
-            { R: 186, G: 215, B: 242 }
-        ];
-
-        // Initialize copy of presets
-        var presetsCopy = presets.slice();
-
-
         var doc = app.activeDocument;
         activeDocument.activeLayer.isBackgroundLayer = false;
     }
@@ -170,6 +154,26 @@
 
         return colors;
     }
+
+
+    
+
+    // Pastel color Presents
+    var presets = [
+        { R: 255, G: 99, B: 146 },
+        { R: 255, G: 228, B: 94 },
+        { R: 255, G: 99, B: 146 },
+        { R: 217, G: 237, B: 146 },
+        { R: 221, G: 161, B: 94 },
+        { R: 242, G: 186, B: 201 },
+        { R: 186, G: 215, B: 242 }
+    ];
+
+    // Initialize copy of presets
+    var presetsCopy = presets.slice();
+    
+
+
     // Get color for BG from list
     function getComplementaryColor(colors) {
         var minDifference = Number.MAX_VALUE;
@@ -550,7 +554,7 @@ function main() {
         if (whiteness > 25) {
             dltBG();
             var colors = getColorsFromCSV();
-            var complementaryColor = getComplementaryColor(colors, presets);
+                var complementaryColor = getComplementaryColor(colors);
             zoomOutandSetBG(complementaryColor);
         } else { dltBGandCrop(); }
 
