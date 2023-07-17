@@ -122,7 +122,7 @@ function main(folder) {
       var formattedDate = (date.getMonth() + 1) + "-" + date.getDate(); // Months are 0-based in JavaScript
       var outputFolder = new File($.fileName).parent.parent;
 
-      var saveFolder = new Folder(outputFolder + "/Output " + formattedDate); // Specify the folder path
+      var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
       if (!saveFolder.exists) {
         saveFolder.create(); // If the folder doesn't exist, create it
       }

@@ -156,8 +156,6 @@
     }
 
 
-    
-
     // Pastel color Presents
     var presets = [
         { R: 255, G: 99, B: 146 },
@@ -172,8 +170,6 @@
     // Initialize copy of presets
     var presetsCopy = presets.slice();
     
-
-
     // Get color for BG from list
     function getComplementaryColor(colors) {
         var minDifference = Number.MAX_VALUE;
