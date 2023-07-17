@@ -2,6 +2,7 @@ function saveInNewFormat(doc) {
     // Get the current file path
     var filePath = doc.path;
     var tname = doc.name;
+    app.activeDocument = doc;
     
     // Extract the original file name without the extension
     var originalFileName = doc.name.replace(/\..+$/, '');
