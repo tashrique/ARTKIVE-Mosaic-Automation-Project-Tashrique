@@ -480,6 +480,105 @@
         desc2006.putObject(idT, idLyr, desc2007);
         executeAction(idsetd, desc2006, DialogModes.NO);
     }
+    // Pastel color Presents
+    var presets = [
+        { R: 255, G: 99, B: 146 },
+        { R: 255, G: 228, B: 94 },
+        { R: 255, G: 99, B: 146 },
+        { R: 217, G: 237, B: 146 },
+        { R: 221, G: 161, B: 94 },
+        { R: 242, G: 186, B: 201 },
+        { R: 186, G: 215, B: 242 }
+    ];
+    // Initialize copy of presets
+    var presetsCopy = presets.slice();
+    // Get color for BG from list
+    function getComplementaryColor(colors) {
+        var minDifference = Number.MAX_VALUE;
+        var complementaryColor = null;
+        var complementaryIndex = null;
+
+        for (var i = 0; i < presetsCopy.length; i++) {
+            var preset = presetsCopy[i];
+            var difference = Math.sqrt(
+                Math.pow(Number(colors.cR) - preset.R, 2) +
+                Math.pow(Number(colors.cG) - preset.G, 2) +
+                Math.pow(Number(colors.cB) - preset.B, 2)
+            );
+
+            if (difference < minDifference) {
+                minDifference = difference;
+                complementaryColor = preset;
+                complementaryIndex = i;
+            }
+        }
+        // Remove the chosen color from the copy of the presets
+        if (complementaryColor !== null) {
+            presetsCopy.splice(complementaryIndex, 1);
+        }
+
+        return complementaryColor;
+    }
+    function RGBtoHSV(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+
+        var max = Math.max(r, g, b);
+        var min = Math.min(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+
+        if (max === min) {
+            h = 0; // achromatic
+        } else {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, v];
+    }
+    function HSVtoRGB(h, s, v) {
+        var r;
+        var g;
+        var b;
+
+        var i = Math.floor(h * 6);
+        var f = h * 6 - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+
+        return [r * 255, g * 255, b * 255];
+    }
+    function getPastelComplement(colors) {
+        var rComp = 255 - colors.R;
+        var gComp = 255 - colors.G;
+        var bComp = 255 - colors.B;
+
+        // Convert to HSV
+        var hsv = RGBtoHSV(rComp, gComp, bComp);
+
+        // Make more PASTELLLLLLLLLLLLLLL!
+        hsv[2] = Math.min(1, hsv[2] + 0.6);
+        hsv[1] = Math.max(0, hsv[1]);
+
+        var rgb = HSVtoRGB(hsv[0], hsv[1], hsv[2]);
+        return { R: Math.round(rgb[0]), G: Math.round(rgb[1]), B: Math.round(rgb[2]) };
+    }
 }
 
 
@@ -529,114 +628,7 @@ main();
 
 
 
-/////////////////////////////////////////////////////
-// Pastel color Presents
-var presets = [
-    { R: 255, G: 99, B: 146 },
-    { R: 255, G: 228, B: 94 },
-    { R: 255, G: 99, B: 146 },
-    { R: 217, G: 237, B: 146 },
-    { R: 221, G: 161, B: 94 },
-    { R: 242, G: 186, B: 201 },
-    { R: 186, G: 215, B: 242 }
-];
 
-// Initialize copy of presets
-var presetsCopy = presets.slice();
-
-// Get color for BG from list
-function getComplementaryColor(colors) {
-    var minDifference = Number.MAX_VALUE;
-    var complementaryColor = null;
-    var complementaryIndex = null;
-
-    for (var i = 0; i < presetsCopy.length; i++) {
-        var preset = presetsCopy[i];
-        var difference = Math.sqrt(
-            Math.pow(Number(colors.cR) - preset.R, 2) +
-            Math.pow(Number(colors.cG) - preset.G, 2) +
-            Math.pow(Number(colors.cB) - preset.B, 2)
-        );
-
-        if (difference < minDifference) {
-            minDifference = difference;
-            complementaryColor = preset;
-            complementaryIndex = i;
-        }
-    }
-    // Remove the chosen color from the copy of the presets
-    if (complementaryColor !== null) {
-        presetsCopy.splice(complementaryIndex, 1);
-    }
-
-    return complementaryColor;
-}
-//////////////////////////////
-
-
-
-
-function RGBtoHSV(r, g, b) {
-    r /= 255, g /= 255, b /= 255;
-
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var h, s, v = max;
-
-    var d = max - min;
-    s = max === 0 ? 0 : d / max;
-
-    if (max === min) {
-        h = 0; // achromatic
-    } else {
-        switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
-    }
-
-    return [h, s, v];
-}
-function HSVtoRGB(h, s, v) {
-    var r;
-    var g;
-    var b;
-
-    var i = Math.floor(h * 6);
-    var f = h * 6 - i;
-    var p = v * (1 - s);
-    var q = v * (1 - f * s);
-    var t = v * (1 - (1 - f) * s);
-
-    switch (i % 6) {
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
-    }
-
-    return [r * 255, g * 255, b * 255];
-}
-
-function getPastelComplement(colors) {
-    var rComp = 255 - colors.R;
-    var gComp = 255 - colors.G;
-    var bComp = 255 - colors.B;
-
-    // Convert to HSV
-    var hsv = RGBtoHSV(rComp, gComp, bComp);
-
-    // Make more PASTELLLLLLLLLLLLLLL!
-    hsv[2] = Math.min(1, hsv[2] + 0.6);
-    hsv[1] = Math.max(0, hsv[1] + 0.2);
-
-    var rgb = HSVtoRGB(hsv[0], hsv[1], hsv[2]);
-    return { R: Math.round(rgb[0]), G: Math.round(rgb[1]), B: Math.round(rgb[2]) };
-}
 
 
 
