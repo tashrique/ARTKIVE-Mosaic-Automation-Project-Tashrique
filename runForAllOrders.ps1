@@ -18,6 +18,9 @@ if (!(Test-Path -Path $outputDir)) {
 $subDirs = Get-ChildItem -Path $outputDir -Directory
 
 
+# Counter for iterations
+$i = 1
+
 # For each subdirectory
 foreach ($dir in $subDirs) {
     # Change directory to the subdirectory
@@ -32,4 +35,20 @@ foreach ($dir in $subDirs) {
 
     # Remove the temporary text file
     Remove-Item -Path $tempFile
+    Write-Output $i
+    Start-Sleep 3
+
+    # Increment the counter
+    $i++
+
+    # If it's the 5th iteration
+    if ($i % 5 -eq 0) {
+        # Close Photoshop if it's running
+        $photoshopProcess = Get-Process -Name 'Photoshop' -ErrorAction SilentlyContinue
+        if ($null -ne $photoshopProcess) {
+            Write-Output "Photoshop Closing for Clearing Scratch Disks..."
+            Stop-Process -Name 'Photoshop'
+            Write-Output "Photoshop is starting now"
+        }
+    }
 }
