@@ -61,6 +61,13 @@ function Update-ColorDistance() {
         [string]$B2
     )
 
+    $R1 = [int]::Parse($R1)
+    $G1 = [int]::Parse($G1)
+    $B1 = [int]::Parse($B1)
+    $R2 = [int]::Parse($R2)
+    $G2 = [int]::Parse($G2)
+    $B2 = [int]::Parse($B2)
+
     $distance = [Math]::Sqrt([Math]::Pow(($R2 - $R1), 2) + [Math]::Pow(($G2 - $G1), 2) + [Math]::Pow(($B2 - $B1), 2))
     return $distance
 }
@@ -74,7 +81,6 @@ $newDataSorted += $startItem
 
 $indicesChosen = @(0)
 $count = $newData.Count
-
 
 for ($currentIndex = 1; $currentIndex -lt $count; $currentIndex++) {
     # if ($indicesChosen -contains $currentIndex) {
@@ -137,12 +143,9 @@ $newDataSorted | Export-Csv -Path $outputCsvPath -NoTypeInformation
 Write-Host "Complementary Color Arrangement: SUCCESS"
 
 # Delete the temp text file
-# Remove-Item -Path ".\workingFolderPath.txt"
-# Remove-Item -Path $csvPath
+#Remove-Item -Path ".\workingFolderPath.txt"
+Remove-Item -Path $csvPath
 # Remove-Item -Path $outputCsvPath
 
 
 & cscript.exe '.\4runNextStep.vbs'
-
-
-# i dont want to do only complementary colors. this makes all the first few images to be colorful and the last ones are wsashed out. what can i change?

@@ -35,8 +35,6 @@ foreach ($dir in $subDirs) {
 
     # Remove the temporary text file
     Remove-Item -Path $tempFile
-    Write-Output $i
-    Start-Sleep 3
 
     # Increment the counter
     $i++

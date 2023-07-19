@@ -160,7 +160,7 @@
         var docRef = app.activeDocument;
         var layerRef = docRef.activeLayer;
 
-        layerRef.resize(85, 85, AnchorPosition.MIDDLECENTER);
+        layerRef.resize(93, 93, AnchorPosition.MIDDLECENTER);
 
 
         // convert color values to a SolidColor object
@@ -594,7 +594,6 @@ function main() {
 
     // Work on individual images
     {
-
         // Initialize variables
         var whiteness = 0;
         MagicWand(TOLERANCE); // Tolerance = 15
@@ -608,17 +607,13 @@ function main() {
         } else { dltBGandCrop(); }
 
 
-
         if (whiteness <= 25) { rescale(); }
         nameLayers();
         resize();
         activeDocument.flatten();
         savePhoto();
-
     }
-
 }
-
 
 
 main();

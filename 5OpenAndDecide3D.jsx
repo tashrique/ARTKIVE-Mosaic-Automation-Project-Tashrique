@@ -42,6 +42,7 @@ function saveAsPSD(saveFile) {
 }
 // Rasterize linked layers
 function processLayers(layers) {
+  alert("Unga Punga")
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
 
@@ -85,6 +86,7 @@ function main(folder) {
   if (folder.exists) {
     var files = folder.getFiles();
 
+
     // Process each photo and save in Working Folder
     {
       for (var i = 0; i < files.length; i++) {
@@ -123,7 +125,7 @@ function main(folder) {
       var outputFolder = new File($.fileName).parent.parent;
 
       var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
-      if (!saveFolder.exists) {
+      if (!saveFolder.exists) { 
         saveFolder.create(); // If the folder doesn't exist, create it
       }
 
