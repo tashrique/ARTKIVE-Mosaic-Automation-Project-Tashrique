@@ -42,7 +42,6 @@ function saveAsPSD(saveFile) {
 }
 // Rasterize linked layers
 function processLayers(layers) {
-  alert("Unga Punga")
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
 
@@ -143,13 +142,15 @@ function main(folder) {
 
     // Rasterize linked layers
     {
-      // processLayers(app.activeDocument.layers);
+      processLayers(app.activeDocument.layers);
     }
 
 
-    // Save the document
+    // Save and close the document
     {
       app.activeDocument.save();
+      app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+
     }
 
 
