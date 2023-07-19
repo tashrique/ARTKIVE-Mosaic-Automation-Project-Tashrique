@@ -75,6 +75,7 @@ $newDataSorted += $startItem
 $indicesChosen = @(0)
 $count = $newData.Count
 
+
 for ($currentIndex = 1; $currentIndex -lt $count; $currentIndex++) {
     # if ($indicesChosen -contains $currentIndex) {
     #     Write-Host "Remove: $currentIndex"
@@ -142,3 +143,6 @@ Write-Host "Complementary Color Arrangement: SUCCESS"
 
 
 & cscript.exe '.\4runNextStep.vbs'
+
+
+# i dont want to do only complementary colors. this makes all the first few images to be colorful and the last ones are wsashed out. what can i change?

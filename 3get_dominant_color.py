@@ -4,8 +4,6 @@ import sys
 import os
 import numpy as np
 
-
-
 def get_dominant_color(image_path):
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -24,8 +22,16 @@ def get_complementary_color(color):
     comp_color = [255 - int(component) for component in color]
     return comp_color
 
+def get_image_saturation(image_path):
+    image = cv2.imread(image_path)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    image = cv2.resize(image, (40, 40))
+
+    return np.mean(image[:,:,1])  # mean of the saturation channel
+
 image_path = sys.argv[1]
 dominant_color = get_dominant_color(image_path)
 dominant_color = [int(a) for a in get_dominant_color(image_path)]
 complementary_color = get_complementary_color(dominant_color)
-print(','.join(map(str, dominant_color)) + ";" + ','.join(map(str, complementary_color)))
+saturation = get_image_saturation(image_path)
+print(','.join(map(str, dominant_color)) + ";" + ','.join(map(str, complementary_color)) + ";" + str(saturation))
