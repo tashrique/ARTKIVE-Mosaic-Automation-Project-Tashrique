@@ -183,6 +183,8 @@ foreach ($item in $top) {
 $dataToExport | Export-Csv -Path (Join-Path -Path $outputPath -ChildPath 'temp.csv') -NoTypeInformation
 Write-Host "Select $gridImageCount Top Pictures: SUCCESS"
 
+
+    
 # Execute findPictureOrder.ps1 script
 $scriptPath = ".\2findPictureOrder.ps1"
 

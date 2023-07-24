@@ -16,11 +16,10 @@ def get_dominant_color(image_path):
 
     return kmeans.cluster_centers_[0]
 
-
 def get_complementary_color(color):
     # Assuming the color is in RGB format
-    comp_color = [255 - int(component) for component in color]
-    return comp_color
+    comp_color = 255 - np.array(color, dtype=int)
+    return comp_color.tolist()
 
 image_path = sys.argv[1]
 dominant_color = get_dominant_color(image_path)
