@@ -14,32 +14,55 @@ $data = $data | Select-Object -Skip 1
 $images = Get-ChildItem -Path $outputPath -Filter *.jpg
 
 # Generate a list of new names and shuffle them
-$newNames = 1..$images.Count | ForEach-Object { "temp{0:D2}.jpg" -f $_ }
-$newNames = $newNames | Sort-Object {Get-Random}
+$tempNames = 1..$images.Count | ForEach-Object { "temp{0:D2}.jpg" -f $_ }
+$tempNames = $tempNames | Sort-Object {Get-Random}
 $updatedData = @()
 
-# Rename all images with a new random name
+# Rename all images with a temporary name
 for ($i = 0; $i -lt $images.Count; $i++) {
     # Save the old image name
     $oldImageName = $images[$i].Name
 
     # Rename the image
-    $images[$i] | Rename-Item -NewName $newNames[$i] -Force
+    $images[$i] | Rename-Item -NewName $tempNames[$i] -Force
 
     # Update the corresponding row in the data
     for ($j = 0; $j -lt $data.Count; $j++) {
         if ($data[$j].'File path' -like "*$oldImageName") {
-            $data[$j].'File path' = Join-Path -Path $outputPath -ChildPath $newNames[$i]
+            $data[$j].'File path' = Join-Path -Path $outputPath -ChildPath $tempNames[$i]
             $updatedData += $data[$j]
+        }
+    }
+}
+
+# Get new list of images after renaming
+$images = Get-ChildItem -Path $outputPath -Filter *.jpg
+
+# Generate a list of final names and shuffle them
+$finalNames = 1..$images.Count | ForEach-Object { "{0:D2}.jpg" -f $_ }
+$finalNames = $finalNames | Sort-Object {Get-Random}
+
+# Rename all images with the final name
+for ($i = 0; $i -lt $images.Count; $i++) {
+    # Save the old image name
+    $oldImageName = $images[$i].Name
+
+    # Rename the image
+    $images[$i] | Rename-Item -NewName $finalNames[$i] -Force
+
+    # Update the corresponding row in the data
+    for ($j = 0; $j -lt $updatedData.Count; $j++) {
+        if ($updatedData[$j].'File path' -like "*$oldImageName") {
+            $updatedData[$j].'File path' = Join-Path -Path $outputPath -ChildPath $finalNames[$i]
         }
     }
 }
 
 # Save changes to CSV
 $outputCsvPath = Join-Path -Path $textPath -ChildPath "Output\MosaicColorData.csv"
-$data = $updatedData
-$data | Export-Csv -Path $outputCsvPath -NoTypeInformation
+$updatedData | Export-Csv -Path $outputCsvPath -NoTypeInformation
 Write-Host "Photo Order Arrangement: SUCCESS"
+
 
 
 

@@ -134,22 +134,17 @@ $top = $colorSort | Select-Object -First $gridImageCount
 
 
 #------------------------------------------------------------------#
-# Create 'Output' folder in the selected directory
+# Define 'Output' folder in the selected directory
 $outputPath = Join-Path -Path $folderPath -ChildPath "Output"
-if (-not (Test-Path $outputPath)) {
-    New-Item -Path $outputPath -ItemType Directory | Out-Null
+
+# Check if 'Output' folder exists
+if (Test-Path $outputPath) {
+    # Delete 'Output' folder and all its contents
+    Remove-Item -Path $outputPath -Recurse -Force
 }
 
-
-# Delete previous photos in the folder
-$imageFiles = Get-ChildItem -Path $outputPath -Filter "*.jpg" -File | Where-Object { $_.Extension -in ".jpg", ".png", ".bmp", ".gif" }
-$previousIMGCounter = 0
-foreach ($file in $imageFiles) {
-    Remove-Item -Path $file.FullName -Force
-    $previousIMGCounter++
-}
-
-
+# Create 'Output' folder in the selected directory
+New-Item -Path $outputPath -ItemType Directory | Out-Null
 
 # Create an ArrayList to store the output data
 $dataToExport = New-Object System.Collections.ArrayList

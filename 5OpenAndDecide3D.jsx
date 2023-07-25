@@ -137,7 +137,6 @@ function main(folder) {
     {
       var reOpen = new File(fileLocation + ".psd");
       var newDoc = app.open(reOpen);
-      app.activeDocument = newDoc;
     }
 
     // Rasterize linked layers
@@ -150,7 +149,6 @@ function main(folder) {
     {
       app.activeDocument.save();
       app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-
     }
 
 
