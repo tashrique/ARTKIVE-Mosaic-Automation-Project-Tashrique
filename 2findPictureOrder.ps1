@@ -1,5 +1,4 @@
 #----------------------------------------------------------------------------------#
-
 # INITILAIZE FILE NAMES
 # Read the folder path from the text file
 $textPath = Get-Content -Path ".\workingFolderPath.txt"
@@ -15,7 +14,7 @@ $data = $data | Select-Object -Skip 1
 $images = Get-ChildItem -Path $outputPath -Filter *.jpg
 
 # Generate a list of new names and shuffle them
-$newNames = 1..$images.Count | ForEach-Object { "{0:D2}.jpg" -f $_ }
+$newNames = 1..$images.Count | ForEach-Object { "temp{0:D2}.jpg" -f $_ }
 $newNames = $newNames | Sort-Object {Get-Random}
 $updatedData = @()
 
@@ -68,6 +67,7 @@ foreach ($item in $data) {
     # Add the new item to the new data array
     $newData += $newItem
 }
+
 
 # # Export the new data to a CSV file
 $newData | Export-Csv -Path $outputCsvPath -NoTypeInformation
