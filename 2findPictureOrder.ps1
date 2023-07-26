@@ -15,7 +15,7 @@ $images = Get-ChildItem -Path $outputPath -Filter *.jpg
 
 # Generate a list of new names and shuffle them
 $tempNames = 1..$images.Count | ForEach-Object { "temp{0:D2}.jpg" -f $_ }
-$tempNames = $tempNames | Sort-Object {Get-Random}
+$tempNames = $tempNames | Sort-Object { Get-Random }
 $updatedData = @()
 
 # Rename all images with a temporary name
@@ -40,7 +40,7 @@ $images = Get-ChildItem -Path $outputPath -Filter *.jpg
 
 # Generate a list of final names and shuffle them
 $finalNames = 1..$images.Count | ForEach-Object { "{0:D2}.jpg" -f $_ }
-$finalNames = $finalNames | Sort-Object {Get-Random}
+$finalNames = $finalNames | Sort-Object { Get-Random }
 
 # Rename all images with the final name
 for ($i = 0; $i -lt $images.Count; $i++) {
@@ -89,6 +89,11 @@ foreach ($item in $data) {
 
     # Add the new item to the new data array
     $newData += $newItem
+
+
+    $OfileName = Split-Path -Path $originalFilePath -Leaf
+    Write-Host "$OfileName : OK"
+
 }
 
 

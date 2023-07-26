@@ -154,6 +154,64 @@
 
         return colors;
     }
+    //get colors direcctly from image analysis on the go
+    function getColorsOnTheRun() {
+
+        // Open csv file
+        {
+            var scriptFolder = new File($.fileName).parent;
+            var txtFile = new File(scriptFolder + "/workingFolderPath.txt");
+            txtFile.open('r');
+            var folderPath = txtFile.read();
+            txtFile.close();
+
+            var folderPath = folderPath.replace(/\\/g, "/");
+            folderPath = folderPath.replace(/(\r\n|\n|\r)/gm, "");
+            var folderPath = folderPath + "/Output";
+            csvFilePath = folderPath + "/MosaicColorData.csv";
+            var file = new File(csvFilePath);
+
+            filename = folderPath + "/" + app.activeDocument.name;
+
+        }
+
+        var colors = {};
+
+        if (file.open('r')) {
+            var line;
+            file.readln(); // Skip the header line
+            while (!file.eof) { // while not the end of the file
+                line = file.readln(); // read the next line
+                var fields = line.split(','); // split the line into fields
+
+                // Assume the CSV structure is: 
+                // "Colorfulness, Contrast, White, File path, R, G, B, cR, cG, cB"
+                // Extract just the filename from the full path in the CSV file
+                var csvFilename = fields[3].replace(/\\/g, "/").replace(/"/g, '');
+
+                if (csvFilename == filename) {
+                    // alert("MATCHED!")
+                    colors = {
+                        R: fields[4] ? parseInt(fields[4].replace(/"/g, ''), 10) : 0,
+                        G: fields[5] ? parseInt(fields[5].replace(/"/g, ''), 10) : 0,
+                        B: fields[6] ? parseInt(fields[6].replace(/"/g, ''), 10) : 0,
+                        cR: fields[7] ? parseInt(fields[7].replace(/"/g, ''), 10) : 0,
+                        cG: fields[8] ? parseInt(fields[8].replace(/"/g, ''), 10) : 0,
+                        cB: fields[9] ? parseInt(fields[9].replace(/"/g, ''), 10) : 0
+                    };
+                    break;
+                }
+            }
+            file.close();
+        } else {
+            alert("Failed to open file: " + csvFilepath);
+        }
+
+        // alert('Dominant color: ' + colors.R + ', ' + colors.G + ', ' + colors.B);
+        // alert('Complementary color: ' + colors.cR + ', ' + colors.cG + ', ' + colors.cB);
+
+        return colors;
+    }
     // Set background color from presets to non rectangle images
     function zoomOutandSetBG(complementaryColor) {
 
@@ -601,6 +659,10 @@ function main() {
 
         if (whiteness > 25) {
             dltBG();
+
+            // var commandToRun = new File("./runComplementary.bat");
+            // commandToRun.execute();
+
             var colors = getColorsFromCSV();
             var complementaryColor = getPastelComplement(colors);
             zoomOutandSetBG(complementaryColor);
