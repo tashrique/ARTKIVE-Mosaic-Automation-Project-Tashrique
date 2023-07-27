@@ -1,69 +1,57 @@
 #----------------------------------------------------------------------------------#
 # INITILAIZE FILE NAMES
-# Read the folder path from the text file
 $textPath = Get-Content -Path ".\workingFolderPath.txt"
 $outputPath = Join-Path -Path $textPath -ChildPath "Output"
 $csvPath = Join-Path -Path $outputPath -ChildPath "temp.csv"
 $data = Import-Csv -Path $csvPath
 $data = $data | Select-Object -Skip 1
+$data | Sort-Object {[double]$_.'Contrast'}, @{Expression = {[double]$_.'Colorfulness'}; Descending = $true} | Export-Csv $csvPath -NoTypeInformation
 #----------------------------------------------------------------------------------#
 
-# RANDOMIZE
+# Top 5 images
+$top5Images = $data[0..4]
 
-# Get all images in the folder
-$images = Get-ChildItem -Path $outputPath -Filter *.jpg
-
-# Generate a list of new names and shuffle them
-$tempNames = 1..$images.Count | ForEach-Object { "temp{0:D2}.jpg" -f $_ }
-$tempNames = $tempNames | Sort-Object { Get-Random }
-$updatedData = @()
-
-# Rename all images with a temporary name
-for ($i = 0; $i -lt $images.Count; $i++) {
-    # Save the old image name
-    $oldImageName = $images[$i].Name
-
-    # Rename the image
-    $images[$i] | Rename-Item -NewName $tempNames[$i] -Force
-
-    # Update the corresponding row in the data
-    for ($j = 0; $j -lt $data.Count; $j++) {
-        if ($data[$j].'File path' -like "*$oldImageName") {
-            $data[$j].'File path' = Join-Path -Path $outputPath -ChildPath $tempNames[$i]
-            $updatedData += $data[$j]
-        }
-    }
-}
-
-# Get new list of images after renaming
-$images = Get-ChildItem -Path $outputPath -Filter *.jpg
+# Remaining images
+$remainingImages = $data[5..($data.Count - 1)]
 
 # Generate a list of final names and shuffle them
-$finalNames = 1..$images.Count | ForEach-Object { "{0:D2}.jpg" -f $_ }
-$finalNames = $finalNames | Sort-Object { Get-Random }
+$finalNames = 1..25 | ForEach-Object { "{0:D2}.jpg" -f $_ } | Get-Random -Count 25
 
-# Rename all images with the final name
-for ($i = 0; $i -lt $images.Count; $i++) {
-    # Save the old image name
-    $oldImageName = $images[$i].Name
+# Specific names for the top 5 images
+$top5Names = "13.jpg", "01.jpg", "05.jpg", "20.jpg", "25.jpg"
 
+# Remove the top 5 names from the list of final names
+$remainingNames = $finalNames | Where-Object { $_ -notin $top5Names }
+
+# Rename the top 5 images
+for ($i = 0; $i -lt $top5Images.Count; $i++) {
     # Rename the image
-    $images[$i] | Rename-Item -NewName $finalNames[$i] -Force
+    $oldImageName = Split-Path -Path $top5Images[$i].'File path' -Leaf
+    $newImageName = $top5Names[$i]
+    Get-Item -Path (Join-Path -Path $outputPath -ChildPath $oldImageName) | Rename-Item -NewName $newImageName -Force
 
     # Update the corresponding row in the data
-    for ($j = 0; $j -lt $updatedData.Count; $j++) {
-        if ($updatedData[$j].'File path' -like "*$oldImageName") {
-            $updatedData[$j].'File path' = Join-Path -Path $outputPath -ChildPath $finalNames[$i]
-        }
-    }
+    $top5Images[$i].'File path' = Join-Path -Path $outputPath -ChildPath $newImageName
 }
+
+# Rename the remaining images
+for ($i = 0; $i -lt $remainingImages.Count; $i++) {
+    # Rename the image
+    $oldImageName = Split-Path -Path $remainingImages[$i].'File path' -Leaf
+    $newImageName = $remainingNames[$i]
+    Get-Item -Path (Join-Path -Path $outputPath -ChildPath $oldImageName) | Rename-Item -NewName $newImageName -Force
+
+    # Update the corresponding row in the data
+    $remainingImages[$i].'File path' = Join-Path -Path $outputPath -ChildPath $newImageName
+}
+
+# Combine the two parts of the data
+$updatedData = $top5Images + $remainingImages
 
 # Save changes to CSV
 $outputCsvPath = Join-Path -Path $textPath -ChildPath "Output\MosaicColorData.csv"
 $updatedData | Export-Csv -Path $outputCsvPath -NoTypeInformation
 Write-Host "Photo Order Arrangement: SUCCESS"
-
-
 
 
 # PREPARED FOR RENAMING - COMPLEMENTARY COLORS
@@ -96,12 +84,8 @@ foreach ($item in $data) {
 
 }
 
-
-# # Export the new data to a CSV file
 $newData | Export-Csv -Path $outputCsvPath -NoTypeInformation
-# $sortCSV = Import-Csv -Path $outputCsvPath
 Write-Host "RGB added to CSV: SUCCESS"
 #------------------------------------------------------------------------------------#
-
 
 & cscript.exe '.\4runNextStep.vbs'

@@ -182,12 +182,14 @@ Write-Host "Select $gridImageCount Top Pictures: SUCCESS"
     
 # Execute findPictureOrder.ps1 script
 $scriptPath = ".\2findPictureOrder.ps1"
+$scriptPath1 = ".\2-1FixedPositioning.ps1"
 
-if (Test-Path $scriptPath) {
-    & $scriptPath
+
+if (Test-Path $scriptPath1) {
+    & $scriptPath1
 }
 else {
-    Write-Host "1findPictureOrder.ps1 does not exist in the directory $scriptPath"
+    Write-Host "1findPictureOrder.ps1 does not exist in the directory $scriptPath1"
 }
 #------------------------------------------------------------------#
 #END OF SELECT TOP
