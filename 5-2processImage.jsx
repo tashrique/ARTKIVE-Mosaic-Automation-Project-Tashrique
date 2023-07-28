@@ -218,7 +218,7 @@
         var docRef = app.activeDocument;
         var layerRef = docRef.activeLayer;
 
-        layerRef.resize(93, 93, AnchorPosition.MIDDLECENTER);
+        layerRef.resize(85, 85, AnchorPosition.MIDDLECENTER);
 
 
         // convert color values to a SolidColor object
